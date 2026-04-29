@@ -21,7 +21,7 @@ export default function Home() {
 
     const { data, error } = await supabase
       .from("tweets") 
-      .select("*")
+      .select("id, tweet, replies (id, reply_text)")
       .eq("relevant", true);
 
     if (!error) {
@@ -49,7 +49,13 @@ export default function Home() {
               <tr key={tweet.id}>
                 <td className="border text-center">{tweet.id}</td>
                 <td className="border text-center">{tweet.tweet}</td>
-                {/* <td className="border text-center">{tweet.replies}</td> */}
+                <td className="border text-center">
+                  {tweet.replies?.map((reply) => (
+                    <div key={reply.id}>
+                      {reply.reply_text}
+                    </div>
+                  ))}
+                </td>
               </tr>
             ))}
           </tbody>
