@@ -33,8 +33,8 @@ export default function Home() {
 }, []);
 
   return (
-    <div className="flex flex-col flex-1 bg-zinc-50 font-sans bg-white dark:bg-black w-screen h-screen ">
-      <h1 className="justify-left font-bold text-3xl text-black dark:text-zinc-50">X/Twitter Dashboard</h1>
+    <div className="flex min-h-screen min-w-screen flex-col bg-white font-sans text-black dark:bg-black dark:text-zinc-50">
+      <h1 className="font-bold text-3xl text-black dark:text-zinc-50">X/Twitter Dashboard</h1>
       <main className="flex flex-1 flex-col pt-5 bg-cover">
         <table className="table-auto pt-20 border w-5/6 justify-center mx-auto">
           <thead className="text-2xl py-2 h-20">
@@ -50,8 +50,8 @@ export default function Home() {
                 <td className="border text-center">{tweet.id}</td>
                 <td className="border text-center">{tweet.tweet}</td>
                 <td className="border text-center">
-                  {tweet.replies?.map((reply) => (
-                    <div key={reply.id}>
+                  {tweet.replies?.map((reply:any) => (
+                    <div key={reply.id} className="border-b p-2">
                       {reply.reply_text}
                     </div>
                   ))}
