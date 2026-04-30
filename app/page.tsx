@@ -19,6 +19,8 @@ export default function Home() {
   const {tweets, setTweets} = useFetchTweets();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
   
   const deleteReply = async (replyId: string) => {
     const supabase = createClient();
@@ -33,14 +35,12 @@ export default function Home() {
       return;
     }
 
-  // ✅ update UI instantly
     setTweets((prev) =>
       prev.map((tweet) => ({
         ...tweet,
         replies: tweet.replies.filter((r: any) => r.id !== replyId),
       }))
     );
-  console.log("Reply deleted successfully");
 };
 
 const deleteTweet = async (Id: string) => {
@@ -57,7 +57,37 @@ const deleteTweet = async (Id: string) => {
     }
 
   setTweets((prev) => prev.filter((tweet) => tweet.id !== Id));
-  console.log("Tweet deleted successfully");
+};
+
+const updateApprovalStatus = async (replyId: string) => {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("replies")
+    .update({ approval_status: true })
+    .eq("id", replyId);
+
+  if (error) {
+    console.error("Error updating approval status:", error);
+    return;
+  }
+
+  /*A popup message is set to inform the user that the reply has been approved successfully */
+   /*setPopupMessage("Reply approved successfully ✔️");*/
+   /*setShowPopup(true);*/
+   console.log("Reply approved:", replyId);
+   /*return (
+  <>
+    {showPopup && (
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
+        <div className="bg-white p-4 rounded">
+          {popupMessage}
+        </div>
+      </div>
+    )}
+  </>
+);
+*/
 };
 
   return (
@@ -90,7 +120,7 @@ const deleteTweet = async (Id: string) => {
                     <div key={reply.id} className="border-b p-2 flex justify-between items-center">
                       {reply.reply_text}
                       <div className="flex flex-col justify-evenly items-center">
-                        <svg viewBox="0 0 507.506 507.506" className="w-5 h-5 dark:text-zinc-50 cursor-pointer" fill="currentColor">
+                        <svg viewBox="0 0 507.506 507.506" className="w-5 h-5 dark:text-zinc-50 cursor-pointer" fill="currentColor" onClick={() => updateApprovalStatus(reply.id)}>
                           	<path d="M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z"/>
                         </svg>
                         <svg viewBox="0 0 24 24" className="w-5 h-5 dark:text-zinc-50 cursor-pointer" fill="currentColor">
