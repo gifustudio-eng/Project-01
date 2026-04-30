@@ -20,5 +20,5 @@ export function useFetchTweets() {
       fetchTweets();
     }, []);
   
-    return tweets;
+    return {tweets, setTweets};
   }
