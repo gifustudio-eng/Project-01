@@ -12,16 +12,33 @@ import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useN8nTrigger } from "@/hooks/n8nAPI";
-import { useFetchTweets } from "@/hooks/fetch_tweets";
-import AcceptedModal from "@/components/Modal/modal";
+import AcceptedModal from "@/components/popups/modals";
+import { useFetchTweets, useApproval, useEdit } from "@/hooks/utilities";
+
 export default function Home() {
   /*useN8nTrigger();*/
   const {tweets, setTweets} = useFetchTweets();
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
+  const [showEditPopup, setShowEditPopup] = useState(false)
   
+  const {
+    updateApprovalStatus,
+    showApprovedPopup,
+    setShowApprovedPopup,
+  } = useApproval();
+
+  /*
+  const {
+    editReply,
+    showEditPopup,
+    setShowEditPopup,
+    setShowEditPopup,
+    editText,
+    setEditText
+  } = useEdit();
+  */
+ 
   const deleteReply = async (replyId: string) => {
     const supabase = createClient();
 
@@ -57,21 +74,6 @@ const deleteTweet = async (Id: string) => {
     }
 
   setTweets((prev) => prev.filter((tweet) => tweet.id !== Id));
-};
-
-const updateApprovalStatus = async (replyId: string) => {
-  const supabase = createClient();
-
-  const { error } = await supabase
-    .from("replies")
-    .update({ approval_status: true })
-    .eq("id", replyId);
-
-  if (error) {
-    console.error("Error updating approval status:", error);
-    return;
-  }
-   setShowPopup(true);
 };
 
   return (
@@ -122,7 +124,7 @@ const updateApprovalStatus = async (replyId: string) => {
             ))}
           </tbody>
         </table>
-        {showPopup && (<AcceptedModal onClose={() => setShowPopup(false)} />  )}
+        {showApprovedPopup && (<AcceptedModal onClose={() => setShowApprovedPopup(false)} />  )}
       </main>
     </div>
   );
