@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useN8nTrigger } from "@/hooks/n8nAPI";
 import { useFetchTweets } from "@/hooks/fetch_tweets";
-
+import AcceptedModal from "@/components/Modal/modal";
 export default function Home() {
   /*useN8nTrigger();*/
   const {tweets, setTweets} = useFetchTweets();
@@ -71,23 +71,7 @@ const updateApprovalStatus = async (replyId: string) => {
     console.error("Error updating approval status:", error);
     return;
   }
-
-  /*A popup message is set to inform the user that the reply has been approved successfully */
-   /*setPopupMessage("Reply approved successfully ✔️");*/
-   /*setShowPopup(true);*/
-   console.log("Reply approved:", replyId);
-   /*return (
-  <>
-    {showPopup && (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
-        <div className="bg-white p-4 rounded">
-          {popupMessage}
-        </div>
-      </div>
-    )}
-  </>
-);
-*/
+   setShowPopup(true);
 };
 
   return (
@@ -138,6 +122,7 @@ const updateApprovalStatus = async (replyId: string) => {
             ))}
           </tbody>
         </table>
+        {showPopup && (<AcceptedModal onClose={() => setShowPopup(false)} />  )}
       </main>
     </div>
   );
