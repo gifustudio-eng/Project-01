@@ -73,13 +73,39 @@ const deleteTweet = async (Id: string) => {
   setTweets((prev) => prev.filter((tweet) => tweet.id !== Id));
 };
 
+const insertKeyword = async (keyword: string) => {
+  const supabase = createClient();
+
+  // Check if table has any rows
+  const { data, error: selectError } = await supabase.from('keyword').select('*').limit(1);
+
+  if (selectError) {
+    console.error("Error checking keyword table:", selectError);
+    return;
+  }
+
+  if (data && data.length === 0) {
+    // Empty, insert
+    const { error: insertError } = await supabase.from('keyword').insert({ id: 1, name: keyword });
+    if (insertError) {
+      console.error("Error inserting keyword:", insertError);
+    }
+  } else {
+    // Has rows, update the name, assuming id=1
+    const { error: updateError } = await supabase.from('keyword').update({ name: keyword }).eq('id', 1);
+    if (updateError) {
+      console.error("Error updating keyword:", updateError);
+    }
+  }
+};
+
   return (
     <div className="flex min-h-screen min-w-screen flex-col bg-white font-sans text-black dark:bg-black dark:text-zinc-50">
       <h1 className="font-bold text-3xl text-black dark:text-zinc-50">X/Twitter Dashboard</h1>
       <main className="flex flex-1 flex-col pt-5 bg-cover">
         <div className="relative w-full flex justify-center">
-          <input type="text" placeholder="Input keyword" className="border p-2 pr-10 w-1/3 rounded-md mb-8" />
-          <svg viewBox="0 0 513.749 513.749" className="w-5 h-5 dark:text-zinc-50 cursor-pointer absolute right-[34%] top-1/4 transform -translate-y-1/2" fill="currentColor">
+          <input type="text" placeholder="Input keyword" className="border p-2 pr-10 w-1/3 rounded-md mb-8" onChange={(e) => setText(e.target.value)} />
+          <svg viewBox="0 0 513.749 513.749" className="w-5 h-5 dark:text-zinc-50 cursor-pointer absolute right-[34%] top-1/4 transform -translate-y-1/2" fill="currentColor" onClick={() => insertKeyword(text)}>
             <path d="M504.352,459.061l-99.435-99.477c74.402-99.427,54.115-240.344-45.312-314.746S119.261-9.277,44.859,90.15   S-9.256,330.494,90.171,404.896c79.868,59.766,189.565,59.766,269.434,0l99.477,99.477c12.501,12.501,32.769,12.501,45.269,0   c12.501-12.501,12.501-32.769,0-45.269L504.352,459.061z M225.717,385.696c-88.366,0-160-71.634-160-160s71.634-160,160-160   s160,71.634,160,160C385.623,314.022,314.044,385.602,225.717,385.696z"/>
           </svg>
         </div>
