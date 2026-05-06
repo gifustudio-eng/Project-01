@@ -18,9 +18,6 @@ import { useFetchTweets, useApproval, useEdit } from "@/hooks/utilities";
 export default function Home() {
   /*useN8nTrigger();*/
   const {tweets, setTweets} = useFetchTweets();
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editText, setEditText] = useState("");
-  const [showEditPopup, setShowEditPopup] = useState(false)
   
   const {
     updateApprovalStatus,
@@ -30,13 +27,12 @@ export default function Home() {
 
   /*
   const {
-    editReply,
-    showEditPopup,
-    setShowEditPopup,
-    setShowEditPopup,
-    editText,
-    setEditText
-  } = useEdit();
+  openEditModal,
+  saveEdit,
+  showEditPopup,
+  setEditText,
+  editText,
+} = useEdit();
   */
  
   const deleteReply = async (replyId: string) => {
@@ -80,6 +76,10 @@ const deleteTweet = async (Id: string) => {
     <div className="flex min-h-screen min-w-screen flex-col bg-white font-sans text-black dark:bg-black dark:text-zinc-50">
       <h1 className="font-bold text-3xl text-black dark:text-zinc-50">X/Twitter Dashboard</h1>
       <main className="flex flex-1 flex-col pt-5 bg-cover">
+        <form className="relative w-full flex justify-center">
+          <input type="text" placeholder="Input keyword" className="border p-2 w-1/3 rounded-md mb-8" />
+          <button type="submit" className="absolute bg-blue-500 text-white px-4 py-2 rounded-md">Search</button>
+        </form>
         <table className="table-auto pt-20 border w-5/6 justify-center mx-auto">
           <thead className="text-2xl py-2 h-20">
             <tr>
