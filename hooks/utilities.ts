@@ -11,7 +11,8 @@ export function useFetchTweets() {
         const { data, error } = await supabase
           .from("tweets") 
           .select("id, tweet, replies (id, reply_text)")
-          .eq("relevant", true);
+          .eq("relevant", true)
+          .neq("priority", "low");
     
         if (!error) {
           setTweets(data || []);
