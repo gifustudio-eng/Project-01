@@ -80,23 +80,23 @@ export function useApproval() {
 }
 
 export function useEdit() {
-    const [showEditedPopup, setShowEditedPopup] = useState(false);
+  const updateText = async (replyId: string, newText: string) => {
+    const supabase = createClient();
 
-    const updateText = async (replyId: string, newText: string) => {
-        const supabase = createClient();
+    const { error } = await supabase
+      .from("replies")
+      .update({ reply_text: newText })
+      .eq("id", replyId);
 
-        const { error } = await supabase
-            .from("replies")
-            .update({ reply_text: newText })
-            .eq("id", replyId);
+    if (error) {
+      console.error("Error updating reply text:", error);
+      return false;
+    }
 
-        if (error) {
-            console.error("Error updating reply text:", error);
-            return;
-        }
-        setShowEditedPopup(true);
-    };
-    return {updateText, showEditedPopup, setShowEditedPopup};
+    return true;
+  };
+
+  return { updateText };
 }
 
 export function useInsertKeyword(){
