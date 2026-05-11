@@ -13,23 +13,35 @@ export function AcceptedModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+export function KeywordModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg text-center dark:text-zinc-50">
+        <h1>Keyword Inputted!</h1>
+        <p>Please wait while we process your request...</p>
+        <button onClick={onClose}>Close</button>
+      </div>
+    </div>
+  );
+}
+
 type EditModalProps = {
   replyId: string;
   initialText?: string;
   onClose: () => void;
+  onSave: (replyId: string, newText: string) => Promise<void>;
 };
 
 export function EditModal({
   replyId,
   initialText = "",
   onClose,
+  onSave
 }: EditModalProps) {
 
   const [text, setText] = useState(initialText);
-  const { updateText } = useEdit();
   const handleSave = async () => {
-    await updateText(replyId, text);
-    onClose();
+    await onSave(replyId, text);
   };
 
   return (

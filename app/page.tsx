@@ -12,71 +12,57 @@ import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useN8nTrigger } from "@/hooks/n8nAPI";
-import { AcceptedModal, EditModal } from "@/components/popups/modals";
+import { AcceptedModal, EditModal, KeywordModal } from "@/components/popups/modals";
 import { useFetchTweets, useApproval, useEdit, useInsertKeyword, useDeleteReply, useDeleteTweet } from "@/hooks/utilities";
 
 export default function Home() {
   /*useN8nTrigger();*/
   const {tweets, setTweets} = useFetchTweets();
   const [text, setText] = useState("");
-  const { introduceKeyword } = useInsertKeyword();
+  const { introduceKeyword, showInsertedPopup, setShowInsertedPopup } = useInsertKeyword();
   const { deleteReply } = useDeleteReply();
   const { deleteTweet } = useDeleteTweet();
-  
-  const {
-    updateApprovalStatus,
-    showApprovedPopup,
-    setShowApprovedPopup
-  } = useApproval();
+  const { updateApprovalStatus, showApprovedPopup, setShowApprovedPopup} = useApproval();
+  const [editingReply, setEditingReply] = useState<{ id: string; text: string;} | null>(null);
+  const { updateText } = useEdit();
 
-  const [editingReply, setEditingReply] = useState<{
-  id: string;
-  text: string;
-} | null>(null);
+  const handleReplyDelete = async (replyId: string) => {
+    const success = await deleteReply(replyId);
 
-const { updateText } = useEdit();
+    if (!success) return;
 
-const handleReplyDelete = async (replyId: string) => {
-  const success = await deleteReply(replyId);
+    setTweets(prev =>
+      prev.map(tweet => ({
+        ...tweet,
+        replies: tweet.replies.filter((r:any) => r.id !== replyId),
+      }))
+    );
+  };
 
-  if (!success) return;
+  const handleTweetDelete = async (tweetId: string) => {
+    const success = await deleteTweet(tweetId);
 
-  setTweets(prev =>
-    prev.map(tweet => ({
-      ...tweet,
-      replies: tweet.replies.filter((r:any) => r.id !== replyId),
-    }))
-  );
-};
+    if (!success) return;
+    setTweets((prev) => prev.filter((tweet) => tweet.id !== tweetId));
+  };
 
-const handleTweetDelete = async (tweetId: string) => {
-  const success = await deleteTweet(tweetId);
+  const handleReplyEdit = async (replyId: string, newText: string) => {
+    const success = await updateText(replyId, newText);
 
-  if (!success) return;
-  setTweets((prev) => prev.filter((tweet) => tweet.id !== tweetId));
-};
+    if (!success) return;
 
-const handleReplyEdit = async (
-  replyId: string,
-  newText: string
-) => {
-  const success = await updateText(replyId, newText);
-
-  if (!success) return;
-
-  setTweets(prev =>
-    prev.map(tweet => ({
-      ...tweet,
-      replies: tweet.replies.map((reply: any) =>
-        reply.id === replyId
-          ? { ...reply, reply_text: newText }
-          : reply
-      ),
-    }))
-  );
-
-  setEditingReply(null);
-};
+    setTweets(prev =>
+      prev.map(tweet => ({
+        ...tweet,
+        replies: tweet.replies.map((reply: any) =>
+          reply.id === replyId
+            ? { ...reply, reply_text: newText }
+            : reply
+        ),
+      }))
+    );
+    setEditingReply(null);
+  };
 
   return (
     <div className="flex min-h-screen min-w-screen flex-col bg-zinc-50 font-sans text-black dark:bg-black dark:text-zinc-50">
@@ -133,7 +119,8 @@ const handleReplyEdit = async (
           </tbody>
         </table>
         {showApprovedPopup && (<AcceptedModal onClose={() => setShowApprovedPopup(false)} />  )}
-        {editingReply && (<EditModal replyId={editingReply.id} initialText={editingReply.text} onClose={() => setEditingReply(null)}/>)}
+        {showInsertedPopup && (<KeywordModal onClose={() => setShowInsertedPopup(false)} />)}
+        {editingReply && (<EditModal replyId={editingReply.id} initialText={editingReply.text} onClose={() => setEditingReply(null)} onSave={handleReplyEdit}/>)}
       </main>
     </div>
   );

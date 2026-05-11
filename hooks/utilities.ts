@@ -100,8 +100,10 @@ export function useEdit() {
 }
 
 export function useInsertKeyword(){
+    const [showInsertedPopup, setShowInsertedPopup] = useState(false);
     const introduceKeyword = async (keyword: string) => {
         const supabase = createClient();
+        
         const { data, error: selectError } = await supabase.from('keyword').select('*').limit(1);
 
         if (selectError) {
@@ -120,6 +122,7 @@ export function useInsertKeyword(){
                 console.error("Error updating keyword:", updateError);
             }
         }
+        setShowInsertedPopup(true);
     };
-    return { introduceKeyword };
+    return { introduceKeyword, showInsertedPopup, setShowInsertedPopup };
 };
