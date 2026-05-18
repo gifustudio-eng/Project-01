@@ -47,6 +47,7 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
+  /*
   if (
     request.nextUrl.pathname !== "/" &&
     !user &&
@@ -56,6 +57,15 @@ export async function updateSession(request: NextRequest) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
+    return NextResponse.redirect(url);
+  }
+    */
+
+  const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
+
+  if (isDashboard && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 
