@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useN8nTrigger } from "@/hooks/n8nAPI";
 import { AcceptedModal, EditModal, KeywordModal } from "@/components/popups/modals";
 import { useFetchTweets, useApproval, useEdit, useInsertKeyword, useDeleteReply, useDeleteTweet } from "@/hooks/utilities";
+import { LogoutButton } from "@/components/logout-button";
 
 export default function Home() {
   /*useN8nTrigger();*/
@@ -66,7 +67,10 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen min-w-screen flex-col bg-zinc-50 font-sans text-black dark:bg-black dark:text-zinc-50">
-      <h1 className="font-bold text-3xl text-black dark:text-zinc-50">X/Twitter Dashboard</h1>
+      <div className="flex">
+        <h1 className="font-bold text-3xl text-black dark:text-zinc-50">X/Twitter Dashboard</h1>
+        <LogoutButton className="w-[100px] h-[40px] ml-auto" />
+      </div>
       <main className="flex flex-1 flex-col pt-5 bg-cover">
         <div className="relative w-full flex justify-center">
           <input type="text" placeholder="Input keyword" className="border p-2 pr-10 w-1/3 rounded-md mb-8 border-black dark:border-zinc-50" onChange={(e) => setText(e.target.value)} />
