@@ -11,13 +11,11 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { useN8nTrigger } from "@/hooks/n8nAPI";
 import { AcceptedModal, EditModal, KeywordModal } from "@/components/popups/modals";
 import { useFetchTweets, useApproval, useEdit, useInsertKeyword, useDeleteReply, useDeleteTweet } from "@/hooks/utilities";
 import { LogoutButton } from "@/components/logout-button";
 
 export default function Home() {
-  /*useN8nTrigger();*/
   const {tweets, setTweets} = useFetchTweets();
   const [text, setText] = useState("");
   const { introduceKeyword, showInsertedPopup, setShowInsertedPopup } = useInsertKeyword();

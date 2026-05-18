@@ -1,6 +1,8 @@
 "use client";
 import  { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { triggerN8N } from "@/lib/n8nAPI";
+
 
 export function useFetchTweets() {
     const [tweets, setTweets] = useState<any[]>([]);
@@ -129,6 +131,7 @@ export function useInsertKeyword(){
             }
         }
         setShowInsertedPopup(true);
+        await triggerN8N({ keyword });
     };
     return { introduceKeyword, showInsertedPopup, setShowInsertedPopup };
 };
