@@ -1,3 +1,4 @@
+"use client";
 import  { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
@@ -7,12 +8,17 @@ export function useFetchTweets() {
       useEffect(() => {
       const fetchTweets = async () => {
         const supabase = createClient();
-    
+        
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+
         const { data, error } = await supabase
           .from("tweets") 
           .select("id, tweet, replies (id, reply_text)")
           .eq("relevant", true)
-          .neq("priority", "low");
+          .neq("priority", "low")
+          .eq("user_id", user?.id);
     
         if (!error) {
           setTweets(data || []);
