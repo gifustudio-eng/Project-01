@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
   try {
     const res = await fetch(
-      "https://pwdlab.app.n8n.cloud/webhook-test/e2979040-1a1c-4fb0-8568-08d7f652077a",
+      "https://pwdlab.app.n8n.cloud/webhook/e2979040-1a1c-4fb0-8568-08d7f652077a",
       {
         method: "POST",
         headers: {
