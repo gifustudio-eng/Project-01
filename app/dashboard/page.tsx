@@ -65,7 +65,7 @@ export default function Home() {
   };
 
   const connectX = () => {
-    const clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID;
+    const clientId = "WEpkT0VLV25wMVB3QWhCMkRsaHM6MTpjaQ";
 
     const redirectUri = "http://localhost:3000/api/x/callback";
 

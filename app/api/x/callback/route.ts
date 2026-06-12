@@ -16,7 +16,7 @@ export async function GET(req: Request) {
       grant_type: "authorization_code",
       code,
       redirect_uri: "http://localhost:3000/api/x/callback",
-      client_id: process.env.X_CLIENT_ID!,
+      client_id: "WEpkT0VLV25wMVB3QWhCMkRsaHM6MTpjaQ",
       code_verifier: "challenge",
     }),
   });
