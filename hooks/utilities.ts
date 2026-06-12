@@ -2,6 +2,7 @@
 import  { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { triggerN8N } from "@/lib/n8nAPI";
+import { text } from "stream/consumers";
 
 
 export function useFetchTweets() {
@@ -71,7 +72,7 @@ export function useDeleteTweet() {
 export function useApproval() {
     const [showApprovedPopup, setShowApprovedPopup] = useState(false);
 
-    const updateApprovalStatus = async (replyId: string) => {
+    const updateApprovalStatus = async (replyId: string, tweetId: string, text: string) => {
         const supabase = createClient();
 
         const { error } = await supabase
@@ -84,6 +85,7 @@ export function useApproval() {
             return;
         }
         setShowApprovedPopup(true);
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&in_reply_to=${tweetId}`)
     };
     return {updateApprovalStatus, showApprovedPopup, setShowApprovedPopup};
 }

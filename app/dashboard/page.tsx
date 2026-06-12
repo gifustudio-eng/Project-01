@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 import { AcceptedModal, EditModal, KeywordModal } from "@/components/popups/modals";
 import { useFetchTweets, useApproval, useEdit, useInsertKeyword, useDeleteReply, useDeleteTweet } from "@/hooks/utilities";
 import { LogoutButton } from "@/components/logout-button";
+import { connect } from "http2";
 
 export default function Home() {
   const {tweets, setTweets} = useFetchTweets();
@@ -63,10 +64,36 @@ export default function Home() {
     setEditingReply(null);
   };
 
+  const connectX = () => {
+    const clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID;
+
+    const redirectUri = "http://localhost:3000/api/x/callback";
+
+    const scope = "tweet.read tweet.write users.read offline.access";
+
+    const state = crypto.randomUUID();
+    const codeChallenge = "challenge"; 
+
+    const url =
+      `https://twitter.com/i/oauth2/authorize?` +
+      `response_type=code&` +
+      `client_id=${clientId}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `scope=${encodeURIComponent(scope)}&` +
+      `state=${state}&` +
+      `code_challenge=${codeChallenge}&` +
+      `code_challenge_method=plain`;
+
+    window.location.href = url;
+  };
+
   return (
     <div className="flex min-h-screen min-w-screen flex-col bg-zinc-50 font-sans text-black dark:bg-black dark:text-zinc-50">
-      <div className="flex">
+      <div className="flex flex-wrap items-center gap-4">
         <h1 className="font-bold text-3xl text-black dark:text-zinc-50">X/Twitter Dashboard</h1>
+        <button onClick={connectX} className="inline-flex items-center gap-2 rounded-full border border-black bg-black px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-900 dark:border-zinc-50 dark:bg-zinc-50 dark:text-black dark:hover:bg-zinc-200">
+          Connect to X
+        </button>
         <LogoutButton className="w-[100px] h-[40px] ml-auto" />
       </div>
       <main className="flex flex-1 flex-col pt-5 bg-cover">
@@ -102,7 +129,7 @@ export default function Home() {
                     <div key={reply.id}  className={`${tweetIndex === 0  && replyIndex === 0 ? "border-t-0" : "border-t-4"} border-black p-2 flex justify-between items-center dark:border-t-zinc-50`}>
                       {reply.reply_text}
                       <div className="flex flex-col justify-evenly items-center gap-5">
-                        <svg viewBox="0 0 507.506 507.506" className="w-5 h-5 dark:text-zinc-50 cursor-pointer" fill="currentColor" onClick={() => updateApprovalStatus(reply.id)}>
+                        <svg viewBox="0 0 507.506 507.506" className="w-5 h-5 dark:text-zinc-50 cursor-pointer" fill="currentColor" onClick={() => updateApprovalStatus(reply.id, reply.tweet_id, reply.reply_text)}>
                           	<path d="M163.865,436.934c-14.406,0.006-28.222-5.72-38.4-15.915L9.369,304.966c-12.492-12.496-12.492-32.752,0-45.248l0,0   c12.496-12.492,32.752-12.492,45.248,0l109.248,109.248L452.889,79.942c12.496-12.492,32.752-12.492,45.248,0l0,0   c12.492,12.496,12.492,32.752,0,45.248L202.265,421.019C192.087,431.214,178.271,436.94,163.865,436.934z"/>
                         </svg>
                         <svg viewBox="0 0 24 24" className="w-5 h-5 dark:text-zinc-50 cursor-pointer" fill="currentColor" onClick={() => setEditingReply({ id: reply.id, text: reply.reply_text })}>
