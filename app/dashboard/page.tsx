@@ -65,7 +65,7 @@ export default function Home() {
   };
 
   const connectX = () => {
-    const clientId = "WEpkT0VLV25wMVB3QWhCMkRsaHM6MTpjaQ";
+    const clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID;
 
     const redirectUri = "http://localhost:3000/api/x/callback";
 
@@ -75,7 +75,7 @@ export default function Home() {
     const codeChallenge = "challenge"; 
 
     const url =
-      `https://twitter.com/i/oauth2/authorize?` +
+      `https://x.com/i/oauth2/authorize?` +
       `response_type=code&` +
       `client_id=${clientId}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
