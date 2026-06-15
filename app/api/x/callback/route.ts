@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/server";
 
 export async function GET(req: Request) {
   console.log("X CALLBACK HIT");
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
     });
   }
 
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const user = await supabase.auth.getUser();
 
@@ -65,5 +65,5 @@ export async function GET(req: Request) {
 
   console.log("INSERT RESULT:", result);
 
-  return NextResponse.redirect("http://localhost:3000");
+  return NextResponse.redirect("http://localhost:3000/dashboard");
 }

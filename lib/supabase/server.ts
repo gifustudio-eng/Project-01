@@ -11,7 +11,7 @@ export async function createClient() {
 
   return createServerClient(
     "https://vrrjtrftnowimthovhfi.supabase.co",
-    "sb_publishable_qTOZHuVZwHbIVFBXIps9LA_4JluKo0x",
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
