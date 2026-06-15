@@ -29,7 +29,7 @@ export async function GET(req: Request) {
       body: new URLSearchParams({
         grant_type: "authorization_code",
         code,
-        redirect_uri: process.env.X_REDIRECT_URI!,
+        redirect_uri: process.env.NEXT_PUBLIC_X_REDIRECT_URI!,
         code_verifier: "challenge",
       }),
     }

@@ -67,7 +67,7 @@ export default function Home() {
   const connectX = () => {
     const clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID;
 
-    const redirectUri = process.env.X_REDIRECT_URI!;
+    const redirectUri = process.env.NEXT_PUBLIC_X_REDIRECT_URI!;
 
     const scope = "tweet.read tweet.write users.read offline.access";
 
