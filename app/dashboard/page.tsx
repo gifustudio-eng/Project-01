@@ -67,7 +67,7 @@ export default function Home() {
   const connectX = () => {
     const clientId = process.env.NEXT_PUBLIC_X_CLIENT_ID;
 
-    const redirectUri = "http://localhost:3000/api/x/callback";
+    const redirectUri = process.env.X_REDIRECT_URI!;
 
     const scope = "tweet.read tweet.write users.read offline.access";
 
