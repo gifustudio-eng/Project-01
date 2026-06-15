@@ -65,5 +65,5 @@ export async function GET(req: Request) {
 
   console.log("INSERT RESULT:", result);
 
-  return NextResponse.redirect("http://localhost:3000/dashboard");
+  return NextResponse.redirect(new URL("/connected-to-x", req.url));
 }
