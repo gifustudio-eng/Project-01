@@ -18,7 +18,7 @@ export function useFetchTweets() {
 
         const { data, error } = await supabase
           .from("tweets") 
-          .select("id, tweet, replies (id, reply_text)")
+          .select("id, tweet, replies (id, tweet_id, reply_text)")
           .eq("relevant", true)
           .neq("priority", "low")
           .eq("user_id", user?.id)
@@ -84,8 +84,22 @@ export function useApproval() {
             console.error("Error updating approval status:", error);
             return;
         }
+
+        const res = await fetch("/api/x/post", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({tweetId, text}),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            console.error("Failed to post reply:", data);
+            return;
+        }
         setShowApprovedPopup(true);
-        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&in_reply_to=${tweetId}`)
     };
     return {updateApprovalStatus, showApprovedPopup, setShowApprovedPopup};
 }

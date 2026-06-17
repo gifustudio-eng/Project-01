@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(req: Request) {
-  const { text } = await req.json();
   const supabase = await createClient();
   const { data: { user }, error: userError, } = await supabase.auth.getUser();
 
@@ -26,6 +25,12 @@ export async function POST(req: Request) {
     );
   }
 
+  const { tweetId, text } = await req.json();
+
+  if (!tweetId) {
+    return NextResponse.json({ error: "Missing tweetId" }, { status: 400 });
+  }
+
   const response = await fetch("https://api.x.com/2/tweets", {
     method: "POST",
     headers: {
@@ -34,6 +39,9 @@ export async function POST(req: Request) {
     },
     body: JSON.stringify({
       text,
+      reply:{
+        in_reply_to_tweet_id: tweetId,
+      }
     }),
   });
 
